@@ -1,0 +1,24 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Data Ingest",
+            "program": "${workspaceFolder}/dataingest/app.js",
+            "runtimeVersion": "8.11.1"
+        },
+
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Test",
+            "program": "${workspaceFolder}/dataingest/test/index.js",
+            "runtimeVersion": "8.11.1"
+        }
+    ]
+}
