@@ -1,0 +1,233 @@
+swagger: "2.0"
+info:
+  title: Blockchain API
+  version: v1
+  description: API for Project Emerald that exposes a Data Model that is stored and managed in the Hyperledger Fabric chaincode and blockchain
+
+host: localhost:10010
+basePath: /api/v1
+
+schemes:
+  - http
+  - https
+
+
+consumes:
+  - text/plain
+  - application/json
+
+
+produces:
+  - text/plain
+  - application/json
+
+
+paths:
+
+  /status:
+    x-swagger-router-controller: runtimeController
+    get:
+      description: Check the Status
+      operationId: getStatus
+      tags:
+        - Runtime
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/RuntimeStatus'
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    put:
+      description: Change the Status of the DataIngest
+      operationId: changeStatus
+      tags:
+        - Runtime
+      parameters:
+        - name: transitionDetails
+          in: body
+          schema:
+            $ref: '#/definitions/StatusTransition'
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: string
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
+
+  /exchanges/{exchangeName}:
+    x-swagger-router-controller: feedController
+    get:
+      description: Get the list of Feeds
+      operationId: getAllFeeds
+      tags:
+        - Feeds
+      parameters:
+        - name: exchangeName
+          in: path
+          type: string
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: array
+            items: 
+              type: string
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    post:
+      description: Add a new Feed
+      operationId: addFeed
+      tags:
+        - Feeds
+      parameters:
+        - name: exchangeName
+          in: path
+          type: string
+          required: true
+        - name: feedName
+          in: body
+          schema:
+            type: string
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: boolean
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+
+
+  /exchanges/{exchangeName}/feeds/{feedName}:
+    x-swagger-router-controller: feedController
+    put:
+      description: Change the runstate of a specific Feed
+      operationId: changeFeedRunState
+      tags:
+        - Feeds
+      parameters:
+        - name: exchangeName
+          in: path
+          type: string
+          required: true
+        - name: feedName
+          in: path
+          type: string
+          required: true
+        - name: newRunState
+          in: body
+          schema:
+            $ref: '#/definitions/StatusTransition'
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: boolean
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    delete:
+      description: Delete a specific Feed
+      operationId: removeFeed
+      tags:
+        - Feeds
+      parameters:
+        - name: exchangeName
+          in: path
+          type: string
+          required: true
+        - name: feedName
+          in: path
+          type: string
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+            type: boolean
+        default:
+          description: Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    
+
+  /swagger:
+    x-swagger-pipe: swagger_raw
+
+
+
+
+definitions:
+
+  ErrorResponse:
+    required:
+      - error
+    properties:
+      error:
+        type: string
+
+  RuntimeStatus:
+    required:
+      - indicator
+      - message
+    properties:
+      indicator:
+        type: number
+      message:
+        type: string
+      validNextStates:
+        type: array
+        items:
+          type: number
+      databasesAreCreated:
+        type: boolean
+      datafeeds:
+        type: array
+        items:
+          type: string
+
+  StatusTransition:
+    required:
+      - newIndicator
+    properties:
+      newIndicator:
+        type: number
+      transitionConfigurations:
+        type: array
+        items:
+          $ref: "#/definitions/KeyValuePair"
+
+  KeyValuePair:
+    required:
+      - key
+      - value
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+
+  Feed:
+    required:
+      - exchangeName
+      - feedName
+    properties:
+      exchangeName:
+        type: string
+      feedName:
+        type: string

@@ -1,0 +1,7 @@
+{
+    "executeOnStart"            : false,
+    "couchDBContentType"        : "text/plain",
+    "couchDBDatabases"          : ["robotrader-CONFIG", "robotrader-STRATEGY", "robotrader-POLONIEX"],
+    "couchDBURL"                : "http://localhost:5984",
+    "poloniexDataFeeds"         : ["BTCUSD"]
+}
